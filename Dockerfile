@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 
-FROM ghcr.io/actions/actions-runner:latest AS actions-runner
+FROM ghcr.io/actions/actions-runner:2.338.2 AS actions-runner
 
-FROM dhi.io/rust:1-debian13-dev
+FROM dhi.io/rust:1.100.0-debian13-dev
 
 USER 0
 
