@@ -44,6 +44,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zstd \
     && rm -rf /var/lib/apt/lists/*
 
+# The base image ships PAM without the common-* files that /etc/pam.d/sudo includes, so sudo aborts with
+# "unable to initialize PAM"; pam-auth-update writes them from /usr/share/pam-configs.
+RUN pam-auth-update --package --force
+
 # Create runner user/group (uid/gid 1001) matching ARC expectations and grant passwordless sudo
 # for gate-setup's install-apt-packages step.
 RUN groupadd -g 1001 runner \
