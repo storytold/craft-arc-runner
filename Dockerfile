@@ -7,26 +7,37 @@ FROM dhi.io/rust:1.100.0-debian13-dev
 USER 0
 
 # Minimal packages required by actions-runner (.NET runtime), Craft CI gate-setup
-# (apt-get, sudo, git, curl, jq, archives), the shell tools CI steps and the runner sets' init containers use
-# (find, file, ps), and native crate linking (build-essential, pkg-config).
+# (apt-get, sudo, git, curl, jq, archives), the tools GitHub-hosted Ubuntu runners have that CI steps and the
+# runner's own action download call (gzip, python3, which, hostname, ip, ssh, git-lfs, wget, rsync, zip, find, file,
+# ps), and native crate linking (build-essential, pkg-config).
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     ca-certificates \
     curl \
+    debianutils \
     file \
     findutils \
     git \
+    git-lfs \
     gzip \
+    hostname \
+    iproute2 \
     jq \
+    less \
     libicu76 \
     libkrb5-3 \
     libssl3 \
+    openssh-client \
     passwd \
     pkg-config \
     procps \
+    python3 \
+    rsync \
     sudo \
     unzip \
+    wget \
     xz-utils \
+    zip \
     zlib1g \
     zstd \
     && rm -rf /var/lib/apt/lists/*
