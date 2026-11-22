@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu76 \
     libkrb5-3 \
     libssl3 \
+    passwd \
     pkg-config \
     sudo \
     unzip \
