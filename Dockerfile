@@ -37,12 +37,23 @@ RUN groupadd -g 1001 runner \
 # so gate-setup can run `rustup toolchain install` while CARGO_HOME=/cache/cargo on runner pods.
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo
+# The gate installs `stable` (with clippy, rustfmt and the wasm target) when a repo pins no channel; having it in the
+# image turns that step into an update check instead of a ~300 MB download per job. The PR runner set mounts /cache
+# read-only, so the toolchain lives in the image rather than on the node cache.
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
     | sh -s -- -y --default-toolchain none --no-modify-path \
+    && /usr/local/cargo/bin/rustup toolchain install stable --profile minimal \
+       --component clippy --component rustfmt --target wasm32-unknown-unknown \
+    && /usr/local/cargo/bin/rustup default stable \
     && chown -R 1001:1001 /usr/local/rustup /usr/local/cargo
 
 # Copy GitHub Actions runner binaries and Node externals from the official ARC runner image.
 COPY --from=actions-runner --chown=1001:1001 /home/runner /home/runner
+
+# The docker CLI and buildx plugin from the same image: the runner sets use dind mode, so container actions, service
+# containers and `docker build` steps call the CLI against the dind sidecar.
+COPY --from=actions-runner /usr/bin/docker /usr/bin/docker
+COPY --from=actions-runner /usr/local/lib/docker/cli-plugins/docker-buildx /usr/local/lib/docker/cli-plugins/docker-buildx
 
 ENV CARGO_HOME=/home/runner/.cargo \
     PATH=/cache/cargo/bin:/home/runner/.cargo/bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
