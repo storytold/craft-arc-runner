@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     file \
     findutils \
     git \
+    gzip \
     jq \
     libicu76 \
     libkrb5-3 \
