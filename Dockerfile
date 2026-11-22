@@ -32,6 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     procps \
     python3 \
+    python-is-python3 \
     rsync \
     sudo \
     unzip \
