@@ -93,6 +93,8 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
 
 # Copy GitHub Actions runner binaries and Node externals from the official ARC runner image.
 COPY --from=actions-runner --chown=1001:1001 /home/runner /home/runner
+# Steps that install tools unpack them into ~/.cargo/bin, which hosted runners have and PATH already lists.
+RUN install -d -o 1001 -g 1001 /home/runner/.cargo /home/runner/.cargo/bin
 
 # The docker CLI and buildx plugin from the same image: the runner sets use dind mode, so container actions, service
 # containers and `docker build` steps call the CLI against the dind sidecar.
